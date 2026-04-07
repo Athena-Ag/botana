@@ -2,7 +2,7 @@ import type { ApiTranscribeResponse, ApiStructureResponse } from '../types'
 
 const API_URL = import.meta.env.VITE_BOTANA_API_URL as string
 
-const USE_MOCK = true // Set to false when botana-api.athenaag.com is live
+const USE_MOCK = false // Set to false when botana-api.athenaag.com is live
 
 // ── Mock data helpers ──────────────────────────────────────────────────────────
 
