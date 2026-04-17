@@ -1,16 +1,32 @@
-name: Deploy to Cloudflare Pages
+name: Build & Deploy to Cloudflare Pages
 on:
   push:
     branches: [main]
   workflow_dispatch:
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm install -g wrangler
-      - name: Deploy
-        run: wrangler pages deploy . --project-name=${{ secrets.CF_PAGES_PROJECT_NAME }} --branch=main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          VITE_BOTANA_API_URL: ${{ secrets.VITE_BOTANA_API_URL }}
+
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy dist --project-name=${{ secrets.CF_PAGES_PROJECT_NAME }} --branch=main
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
