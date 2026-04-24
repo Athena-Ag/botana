@@ -312,21 +312,131 @@ export default function NewLog() {
           </section>
         )}
 
-        {/* Structured data */}
+        {/* Growth Stage */}
+        {structuredData.growth_stage && (structuredData.growth_stage.phase || structuredData.growth_stage.week) && (
+          <section style={{ ...cardStyle, background: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+            <label style={{ ...labelStyle, color: '#15803d' }}>Growth Stage</label>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#166534' }}>
+              {structuredData.growth_stage.phase && <span style={{ textTransform: 'capitalize' }}>{structuredData.growth_stage.phase}</span>}
+              {structuredData.growth_stage.week && <span> — Week {structuredData.growth_stage.week}</span>}
+              {structuredData.growth_stage.day && <span>, Day {structuredData.growth_stage.day}</span>}
+            </div>
+          </section>
+        )}
+
+        {/* Environment */}
         {structuredData.environment && Object.keys(structuredData.environment).length > 0 && (
           <section style={cardStyle}>
             <label style={labelStyle}>Environment</label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-              {Object.entries(structuredData.environment).map(([k, v]) => v !== undefined && (
+              {Object.entries(structuredData.environment).map(([k, v]) => v !== undefined && v !== null && (
                 <div key={k} style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
-                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{k}</div>
-                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>{v}</div>
+                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{k.replace(/_/g, ' ')}</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>{v}{k === 'temp_f' ? '°F' : k === 'rh' ? '%' : k === 'co2' ? ' ppm' : ''}</div>
                 </div>
               ))}
             </div>
           </section>
         )}
 
+        {/* Feed / Fertilizer */}
+        {structuredData.feed && (structuredData.feed.products?.length || structuredData.feed.ec || structuredData.feed.ph) && (
+          <section style={{ ...cardStyle, borderLeft: '3px solid #00AE42' }}>
+            <label style={{ ...labelStyle, color: '#15803d' }}>Feed Program</label>
+            {(structuredData.feed.products ?? []).length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {structuredData.feed.products!.map(p => (
+                    <span key={p} style={{ background: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: 9999, fontSize: 12, fontWeight: 600 }}>{p}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+              {structuredData.feed.ec != null && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af' }}>EC</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>{structuredData.feed.ec}</div>
+                </div>
+              )}
+              {structuredData.feed.ppm != null && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af' }}>PPM</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>{structuredData.feed.ppm}</div>
+                </div>
+              )}
+              {structuredData.feed.ph != null && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af' }}>pH</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>{structuredData.feed.ph}</div>
+                </div>
+              )}
+            </div>
+            {structuredData.feed.dilution_rate && (
+              <div style={{ fontSize: 13, color: '#6b7280', marginTop: 8 }}>Rate: {structuredData.feed.dilution_rate}</div>
+            )}
+          </section>
+        )}
+
+        {/* Trial */}
+        {structuredData.trial?.is_trial && (
+          <section style={{ ...cardStyle, borderLeft: '3px solid #8b5cf6' }}>
+            <label style={{ ...labelStyle, color: '#7c3aed' }}>Trial / Side-by-Side</label>
+            {structuredData.trial.description && (
+              <p style={{ margin: '0 0 10px', fontSize: 14, fontWeight: 600, color: '#111827' }}>{structuredData.trial.description}</p>
+            )}
+            {(structuredData.trial.groups ?? []).length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+                {structuredData.trial.groups!.map((g, i) => (
+                  <div key={i} style={{ background: '#f5f3ff', borderRadius: 8, padding: '8px 12px', fontSize: 13, color: '#374151' }}>{g}</div>
+                ))}
+              </div>
+            )}
+            {(structuredData.trial.observations ?? []).length > 0 && (
+              <ul style={{ margin: 0, paddingLeft: 20 }}>
+                {structuredData.trial.observations!.map((o, i) => (
+                  <li key={i} style={{ fontSize: 13, color: '#374151', marginBottom: 4 }}>{o}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        {/* Plant Health */}
+        {structuredData.plant_health && (structuredData.plant_health.turgor || structuredData.plant_health.pest_pressure || (structuredData.plant_health.notes ?? []).length > 0) && (
+          <section style={cardStyle}>
+            <label style={labelStyle}>Plant Health</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: (structuredData.plant_health.notes ?? []).length > 0 ? 10 : 0 }}>
+              {structuredData.plant_health.turgor && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase' }}>Turgor</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: structuredData.plant_health.turgor === 'praying' ? '#15803d' : '#b91c1c', textTransform: 'capitalize' }}>{structuredData.plant_health.turgor}</div>
+                </div>
+              )}
+              {structuredData.plant_health.canopy_uniformity && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase' }}>Canopy</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#111827', textTransform: 'capitalize' }}>{structuredData.plant_health.canopy_uniformity}</div>
+                </div>
+              )}
+              {structuredData.plant_health.pest_pressure && (
+                <div style={{ background: '#f9fafb', borderRadius: 8, padding: '8px 12px' }}>
+                  <div style={{ fontSize: 11, color: '#9ca3af', textTransform: 'uppercase' }}>Pest Pressure</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: structuredData.plant_health.pest_pressure === 'none' ? '#15803d' : '#b91c1c', textTransform: 'capitalize' }}>{structuredData.plant_health.pest_pressure}</div>
+                </div>
+              )}
+            </div>
+            {(structuredData.plant_health.notes ?? []).length > 0 && (
+              <ul style={{ margin: 0, paddingLeft: 20 }}>
+                {structuredData.plant_health.notes!.map((n, i) => (
+                  <li key={i} style={{ fontSize: 13, color: '#374151', marginBottom: 4 }}>{n}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        {/* Observations */}
         {structuredData.observations && structuredData.observations.length > 0 && (
           <section style={cardStyle}>
             <label style={labelStyle}>Observations</label>

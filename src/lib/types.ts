@@ -39,9 +39,37 @@ export interface StructuredData {
     co2?: number
     light_ppfd?: number
   }
+  growth_stage?: {
+    phase?: 'veg' | 'flower' | 'propagation' | 'clone' | 'mother' | 'dry' | 'cure' | 'other'
+    week?: number
+    day?: number
+  }
+  feed?: {
+    products?: string[]
+    ec?: number
+    ppm?: number
+    ph?: number
+    feed_volume_gal?: number
+    dilution_rate?: string
+    notes?: string
+  }
+  trial?: {
+    is_trial?: boolean
+    description?: string
+    groups?: string[]
+    observations?: string[]
+  }
   water?: {
     usage_gal?: number
     runoff_pct?: number
+  }
+  plant_health?: {
+    turgor?: 'praying' | 'wilting' | 'normal' | 'drooping'
+    color?: string
+    canopy_uniformity?: 'even' | 'uneven' | 'mixed'
+    root_health?: string
+    pest_pressure?: 'none' | 'low' | 'moderate' | 'high'
+    notes?: string[]
   }
   observations?: string[]
   tasks_completed?: string[]
