@@ -281,3 +281,4 @@ create policy "Allow all on cycles" on cycles for all using (true) with check (t
 | 2026-04-23 | ARCHITECTURE.md created (retroactively) | Sol |
 | 2026-04-23 | rooms.setup_data/setup_transcript/setup_audio_url columns planned (migration pending) | Sol |
 | 2026-04-23 | cycles table designed (migration pending — Robert to run SQL) | Sol |
+| 2026-04-25 | Inline editing for structured_data fields + tags on LogDetail. Added InlineEdit.jsx, TagEditor.jsx, StructuredDataEditor.jsx. Supabase PATCH on blur/enter, optimistic cache update, Saved ✓ flash. | Axiom |
